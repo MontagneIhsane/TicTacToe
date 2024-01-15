@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/MontagneIhsane/TicTacToe/issues"
   },
-  "homepage": "https://github.com/MontagneIhsane/TicTacToe#readme"
+  "homepage": "https://github.com/MontagneIhsane/TicTacToe#readme",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }

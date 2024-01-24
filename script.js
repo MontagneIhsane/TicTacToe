@@ -1,99 +1,92 @@
 const prompt = require("prompt-sync")();
 
 class Morpion {
-constructor() {
+  constructor() {
     this.player1 = "X";
     this.player2 = "O";
     this.cells = ["", "", "", "", "", "", "", "", ""];
-}
+  }
 
-showBoard() {
-    console.log(
-    " " +
-        this.cells[0] +
-        " | " +
-        this.cells[1] +
-        " | " +
-        this.cells[2] +
-        " "
-    );
-    console.log("---|---|---");
-    console.log(
-    " " +
-        this.cells[3] +
-        " | " +
-        this.cells[4] +
-        " | " +
-        this.cells[5] +
-        " "
-    );
-    console.log("---|---|---");
-    console.log(
-    " " +
-        this.cells[6] +
-        " | " +
-        this.cells[7] +
-        " | " +
-        this.cells[8] +
-        " "
-    );
-}
+  showBoard() {
+    for (let i = 0; i < 9; i += 3) {
+      console.log(
+        ` ${this.cells[i]} | ${this.cells[i + 1]} | ${
+          this.cells[i + 2]
+        } `
+      );
+      if (i < 6) {
+        console.log("---|---|---");
+      }
+    }
+  }
 
-play(player) {
+  play(player) {
+    console.clear();
     console.log("Joueur " + player + " joue.");
     this.showBoard();
 
     const choice = prompt("Choisis une case (entre 1 et 9)");
-    const btwZeroAndNine = Number(choice) > 0 && Number(choice) < 10;
+    const numberIsValid = Number(choice) > 0 && Number(choice) < 10;
     const cellIsEmpty = this.cells[Number(choice) - 1] === "";
 
-    if (btwZeroAndNine && cellIsEmpty) {
-    this.cells[Number(choice) - 1] = player;
+    if (numberIsValid && cellIsEmpty) {
+      this.cells[Number(choice) - 1] = player;
     } else {
-    console.log("Nan, rejoue.");
-    this.play(player);
+      console.log("Nan, rejoue.");
+      this.play(player);
     }
 
     this.showBoard();
-}
+  }
 
-checkVictory() {
-    const winConditions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
+  checkVictory(symbol) {
+    const winningCombinations = [
+      // Horizontal Win
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      // Vertical Win
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      // Diagonal Win
+      [0, 4, 8],
+      [2, 4, 6],
     ];
 
-    for (const condition of winConditions) {
-    const [a, b, c] = condition;
-    f (
-        this.cells[a] !== "" &&
-        this.cells[a] === this.cells[b] &&
-        this.cells[b] === this.cells[c]
-    );
-    {
-        console.log("Joueur " + this.cells[a] + " remporte la partie !");
+    for (let i = 0; i < winningCombinations.length; i++) {
+      const [a, b, c] = winningCombinations[i];
+
+      if (
+        this.cells[a] === symbol &&
+        this.cells[b] === symbol &&
+        this.cells[c] === symbol
+      ) {
+        console.log("Joueur " + symbol + " gagne !");
         return true;
+      }
+      return false;
     }
-    }
+  }
 
-    return false;
+  gameLoop() {
+    for (let i = 0; i < this.cells.length; i++) {
+      this.play(this.player1);
+      if (this.checkVictory(this.player1)) {
+        return;
+      }
+
+      this.play(this.player2);
+      if (this.checkVictory(this.player2)) {
+        console.log("victoire 2");
+        return;
+      }
+    }
+  }
 }
 
-gameLoop() {
-    this.play(this.player1);
-    if (this.checkVictory()) {
-    return;
-    }
-    this.play(this.player2);
-    this.checkVictory();
-}
-}
+// const m = new Morpion();
+// m.gameLoop();
+// m.checkVictory();
 
-const m = new Morpion();
-m.gameLoop();
+module.exports = Morpion;
